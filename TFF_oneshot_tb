@@ -1,28 +1,28 @@
 `timescale 1ns / 1ps
 
-module TFF_oneshot_tb() ;
+module TFF_oneshot(
+    input clk,
+    input rst, 
+    input T,
+    output reg Q
+);
 
-    reg clk, rst, T;
-    wire Q;
 
-    TFF_oneshot FF(clk, rst, T, Q);
+    reg T_reg, T_trig;
 
-  
-    initial begin
-        clk <= 0;
-        rst <= 1;
-        T <= 0;
-        #10 rst <= 0;
-        #10 rst <= 1;
-        #80 T <= 1;
-        #100 T <= 0;
-        
-    
+    always @(posedge clk or negedge rst) begin
+        if (!rst) begin
+            Q <= 1'b0;
+            T_reg <= 1'b0;
+            T_trig <= 1'b0;
+        end else begin
+            T_reg <= T;
+            T_trig <= T&~T_reg;
+        end
     end
     
-    always begin
-        #5 clk <= ~clk;
+    always @(posedge clk) begin
+        if (T_trig) begin
+            Q <= ~Q;
+        end
     end
-
-
-endmodule
