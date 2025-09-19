@@ -1,29 +1,28 @@
 `timescale 1ns / 1ps
 
-module TFF_oneshot_tb();
+module TFF_oneshot_tb() ;
 
-reg clk, rst, T;
-wire Q;
+    reg clk, rst, T;
+    wire Q;
 
-TFF_oneshot FF(clk, rst, T, Q);
+    TFF_oneshot FF(clk, rst, T, Q);
 
-always #5 clk = ~clk;
-
-initial begin
-    clk = 0;
-    rst = 1;
-    T = 0;
-    #10 rst = 0;
-    #10 rst = 1;
-    #80 T = 1;
-    #100 T = 0;
-    #120 T = 1;
-    #140 T = 0;
-    #160 T = 1;
-    #180 T = 0;
+  
+    initial begin
+        clk <= 0;
+        rst <= 1;
+        T <= 0;
+        #10 rst <= 0;
+        #10 rst <= 1;
+        #80 T <= 1;
+        #100 T <= 0;
+        
     
-    #50 $finish;
-end
+    end
+    
+    always begin
+        #5 clk <= ~clk;
+    end
 
 
 endmodule
