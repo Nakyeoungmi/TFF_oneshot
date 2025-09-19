@@ -1,25 +1,29 @@
 `timescale 1ns / 1ps
 
-module TFF_oneshot(clk, rst, T, Q);
+module TFF_oneshot(
+    input clk,
+    input rst, 
+    input T,
+    output reg Q
+);
 
-input T, clk, rst;
-reg T_reg, T_trig;
-output reg Q;
 
-always @(posedge clk or negedge rst) begin
-    if (!rst) begin
-        Q<=1'b0;
-        T_reg<=1'b0;
-        T_trig<=1'b0;
+    reg T_reg, T_trig;
+
+    always @(posedge clk or negedge rst) begin
+        if (!rst) begin
+            Q <= 1'b0;
+            T_reg <= 1'b0;
+            T_trig <= 1'b0;
+        end else begin
+            T_reg <= T;
+            T_trig <= T&~T_reg;
+        end
     end
-    else begin
-        T_reg<=T;
-        T_trig<=T&~T_reg;
+    
+    always @(posedge clk) begin
+        if (T_trig) begin
+            Q <= ~Q;
+        end
     end
-
-    if(T_trig) begin
-        Q<=~Q;
-    end
-end
-
 endmodule
